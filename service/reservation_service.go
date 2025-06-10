@@ -35,7 +35,7 @@ func (r *ReservationService) CriarReserva(novaReserva entity.Reservation) error 
 	for _, reserva := range r.Reservas {
 		if novaReserva.NomeSala == reserva.NomeSala &&
 			utils.ConflitoDeTempo(novaReserva.HoraInicio, reserva.HoraFim, reserva.HoraInicio, novaReserva.HoraFim) {
-			return errors.New("Horário não está disponível, tente novamente!")
+			return errors.New("Conflito de horário, reserva não criada!")
 		}
 	}
 
