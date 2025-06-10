@@ -16,36 +16,33 @@ func (r *ReservationService) CriarReserva(novaReserva entity.Reservation) error 
 	valido := false
 	conflito := false
 
-	// Verifica se a sala da nova reserva é uma das salas permitidas.
 	for _, sala := range listaDeSalasPermitidas {
 		if novaReserva.NomeSala == sala {
 			valido = true
-			break // Encontra a sala válida e não precisa continuar verificando outras.
+			break
 		}
 	}
 
-	// Caso a sala não esteja na lista de permitidas, avisa e encerra a operação.
 	if !valido {
-		return errors.New("A sala é inválida, tente novamente!")
+		return errors.New("Sala inválida, tente novamente!")
 	}
 
-	// Percorre todas as reservas existentes para verificar conflito de horário.
+	if !utils.HoraValida(novaReserva.HoraInicio, novaReserva.HoraFim) {
+		conflito = true
+		return errors.New("Horário inválido: hora de entrada deve ser menor que a de saída.")
+	}
+
 	for _, reserva := range r.Reservas {
-		if novaReserva.NomeSala == reserva.NomeSala { // Verifica apenas reservas na mesma sala.
-			// Usa a função utilitária para confirmar se há sobreposição de horários.
-			if utils.ConflitoDeTempo(novaReserva.HoraInicio, reserva.HoraFim, reserva.HoraInicio, novaReserva.HoraFim) {
-				conflito = true                                                    // Marca como verdadeiro ao encontrar conflito.
-				return errors.New("Horário não está disponível, tente novamente!") // Encerra a operação se houver conflito.
-			}
+		if novaReserva.NomeSala == reserva.NomeSala &&
+			utils.ConflitoDeTempo(novaReserva.HoraInicio, reserva.HoraFim, reserva.HoraInicio, novaReserva.HoraFim) {
+			return errors.New("Horário não está disponível, tente novamente!")
 		}
 	}
 
-	// Se não houve nenhum conflito, avisa que o horário está disponível.
 	if !conflito {
 		fmt.Println("Horário disponível.")
 	}
 
-	// Adiciona a nova reserva ao slice de reservas.
 	r.Reservas = append(r.Reservas, novaReserva)
 	return nil
 }

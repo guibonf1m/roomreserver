@@ -51,6 +51,7 @@ func main() {
 
 			fmt.Print("Qual será a hora de saída: ")
 			fmt.Scanln(&End)
+			fmt.Println("")
 
 			novaReserva := entity.Reservation{
 				ReservaId:    id,
@@ -62,10 +63,9 @@ func main() {
 
 			err := minhasSalas.CriarReserva(novaReserva)
 			if err != nil {
-				fmt.Println("Erro", err.Error())
-				break
+				fmt.Println(err.Error())
 			} else {
-				fmt.Println("Reserva criada com sucesso!")
+				fmt.Println("Reserva criada com sucesso! \n")
 			}
 
 		case "3":
@@ -73,7 +73,7 @@ func main() {
 				fmt.Printf("Reserva ID: %s, Sala: %s, Start: %d, End: %d, Reservador Por: %s ",
 					reservas.ReservaId, reservas.NomeSala, reservas.HoraInicio,
 					reservas.HoraFim, reservas.ReservadoPor)
-				fmt.Println("")
+				fmt.Println("\n")
 			}
 
 		case "4":
